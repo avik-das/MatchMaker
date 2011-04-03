@@ -71,7 +71,13 @@ function load_friend(friends, fi, uuid) {
         $.ajax({
             url: "/record/send-data/" + uuid,
             type: 'POST',
-            success: function(data, textStatus, jqXHR) {}
+            dataType: 'JSON',
+            success: function(data, textStatus, jqXHR) {
+                for (var uid in data) {
+                    $("#match-" + uid).append(
+                        data[uid] == "2" ? "<span style='color: #00ff00;'>MATCH</span>" : "<span style='color: #ff0000;'>NOPE</span>");
+                }
+            }
         });
         return;
     }

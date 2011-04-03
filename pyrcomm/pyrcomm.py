@@ -10,8 +10,15 @@ import csv
 import re
 import string
 
+import os
+
 CSV_HEADERS = ["uid", "messages"] # TODO: add more
 CSV_FIELD_SIZE_LIMIT = csv.field_size_limit()
+
+CWD = os.path.abspath(os.curdir)
+CSV_DIR = CWD + "/csv"
+print "Working in '%s'" % CWD
+print "Will place CSV files in '%s'" % CSV_DIR
 
 def process_json_data(data):
     pdata = json.loads(data)
@@ -31,6 +38,7 @@ def process_json_data(data):
 
 class OpenDataRecord(object):
     def __init__(self, fname):
+        self.filename = fname
         self.openfile = open(fname, 'wb')
         self.csvwriter = csv.DictWriter(self.openfile, CSV_HEADERS)
         self.frienddata = []
@@ -94,7 +102,7 @@ class PyRComm(BaseHTTPRequestHandler):
 
         try:
             recid = str(uuid.uuid1())
-            odr = OpenDataRecord("csv/%s.csv" % recid)
+            odr = OpenDataRecord(CSV_DIR + "/%s.csv" % recid)
             self.opendatarecords[recid] = odr
 
             resp = {'uuid': recid}
@@ -113,11 +121,28 @@ class PyRComm(BaseHTTPRequestHandler):
         self.send_response(204)
 
     def send_data(self, odrid):
-        # TODO: send the data
-        odr = self.__getodr(odrid)
-        odr.close()
-        del self.opendatarecords[odrid]
-        self.send_response(204)
+        try:
+            odr = self.__getodr(odrid)
+            fname = odr.filename
+            odr.close()
+
+            rconn = pyRserve.rconnect()
+            rconn.r.source("/home/avik/Desktop/yourMatch.R")
+            resp = rconn.r.classifyThis(fname)
+            respreader = csv.reader(open(fname + ".out.csv", 'rb'))
+
+            resp = {}
+            first = True
+            for row in respreader:
+                if first:
+                    first = False
+                    continue
+                resp[row[1]] = row[0]
+            self.wfile.write(json.dumps(resp))
+
+            del self.opendatarecords[odrid]
+        except IOError:
+            self.send_error(500, 'Unable to send/receive data to Rserve')
 
     def __getodr(self, odrid):
         if odrid not in self.opendatarecords:

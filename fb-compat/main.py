@@ -351,7 +351,7 @@ class MatchHandler(BaseHandler):
         if self.user:
             self.user.refresh_data()
             friends = select_random(
-                    User.get_by_key_name(self.user.friends), 5)
+                    User.get_by_key_name(self.user.friends), 10)
             self.render(u'matches', friends=friends),
         else:
             self.render(u'welcome')
@@ -406,10 +406,11 @@ class PYRCommHandlerFriend(BaseHandler):
 class PYRCommHandlerEnd(BaseHandler):
     @user_required
     def post(self, uuid):
-        urlfetch.fetch(
+        result = urlfetch.fetch(
             url=PYRCOMM_URL + u'/send-data/' + uuid,
-            method=urlfetch.POST)
-        self.response.set_status(204)
+            method=urlfetch.POST).content
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write(result)
 
 def main():
     routes = [

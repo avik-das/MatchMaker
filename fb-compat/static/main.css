@@ -45,7 +45,7 @@ h1, h2, h3, h4, h5, h6, dt {
 }
 h1 {
   border-bottom: 1px solid #1d4088;
-  color: #ff744e;
+  color: #744eff;
   font-size: 18px;
   margin: 0 0 15px 0;
   padding-bottom: 5px;
@@ -87,8 +87,8 @@ h1 {
  * Header
  */
 .hd {
-  background: #9cccff;
-  border-bottom: 6px solid #1d4088;
+  background: #eeeeff;
+  border-bottom: 6px solid #1d4033;
   padding: 10px 10px;
 }
 .hd a,
