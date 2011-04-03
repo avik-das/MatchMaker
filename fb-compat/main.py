@@ -351,7 +351,7 @@ class MatchHandler(BaseHandler):
         if self.user:
             self.user.refresh_data()
             friends = select_random(
-                    User.get_by_key_name(self.user.friends), 30)
+                    User.get_by_key_name(self.user.friends), 5)
             self.render(u'matches', friends=friends),
         else:
             self.render(u'welcome')
@@ -372,7 +372,7 @@ class UserMatchHandler(BaseHandler):
                 content=u'You are not allowed to see that.')
             self.redirect(u'/')
 
-PYRCOMM_URL = "http://136.152.177.95:6543"
+PYRCOMM_URL = "http://136.152.176.38:6543"
 
 class PYRCommHandlerStart(BaseHandler):
     @user_required
