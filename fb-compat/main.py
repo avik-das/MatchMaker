@@ -199,7 +199,7 @@ class CsrfException(Exception):
 class BaseHandler(webapp.RequestHandler):
     facebook = None
     user = None
-    csrf_protect = True
+    csrf_protect = False
 
     def initialize(self, request, response):
         """General initialization for every request"""
@@ -372,11 +372,53 @@ class UserMatchHandler(BaseHandler):
                 content=u'You are not allowed to see that.')
             self.redirect(u'/')
 
+PYRCOMM_URL = "http://136.152.177.95:6543"
+
+class PYRCommHandlerStart(BaseHandler):
+    @user_required
+    def post(self):
+        result = urlfetch.fetch(
+            url=PYRCOMM_URL + u'/start-record',
+            method=urlfetch.POST).content
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(result)
+
+class PYRCommHandlerSelf(BaseHandler):
+    @user_required
+    def post(self, uuid):
+        logging.info(uuid)
+        urlfetch.fetch(
+            url=PYRCOMM_URL + u'/add-self-data/' + uuid,
+            method=urlfetch.POST,
+            payload=self.request.POST[u'data'].encode("ascii", "ignore"))
+        self.response.set_status(204)
+
+
+class PYRCommHandlerFriend(BaseHandler):
+    @user_required
+    def post(self, uuid):
+        urlfetch.fetch(
+            url=PYRCOMM_URL + u'/add-friend-data/' + uuid,
+            method=urlfetch.POST,
+            payload=self.request.POST[u'data'].encode("ascii", "ignore"))
+        self.response.set_status(204)
+
+class PYRCommHandlerEnd(BaseHandler):
+    @user_required
+    def post(self, uuid):
+        urlfetch.fetch(
+            url=PYRCOMM_URL + u'/send-data/' + uuid,
+            method=urlfetch.POST)
+        self.response.set_status(204)
 
 def main():
     routes = [
         (r'/', MatchHandler),
-        (r'/user/(.*)', UserMatchHandler),
+        (r'/user/(.*)/?', UserMatchHandler),
+        (r'/record/start-record/?', PYRCommHandlerStart),
+        (r'/record/add-self-data/(.*)/?', PYRCommHandlerSelf),
+        (r'/record/add-friend-data/(.*)/?', PYRCommHandlerFriend),
+        (r'/record/send-data/(.*)/?', PYRCommHandlerEnd),
     ]
     application = webapp.WSGIApplication(routes, debug=True)
     util.run_wsgi_app(application)

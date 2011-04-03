@@ -1,3 +1,5 @@
 fb-compat/*.swp
 fb-compat/*.pyc
 fb-compat/*/*.swp
+pyrcomm/csv
+pyrcomm/*.swp

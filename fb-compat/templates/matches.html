@@ -3,18 +3,36 @@
 {% block title %}Your Matches{% endblock %}
 {% block body %}
 <div id="matches">
-  <h1>Your Matches</h1>
+  <h1>Your Matches
+      <span id="load-self">
+        <img src="/loading.gif" alt="Loading..." />
+      </span>
+  </h1>
 
   {% if friends %}
+
   <ul>
     {% for friend in friends %}
     <li>
       <a class="name" href="/user/{{ friend.user_id }}">
         {{ friend.name }}
       </a>
+      <span id="match-{{ friend.user_id }}">
+        <img src="/loading.gif" alt="Loading..." />
+      </span>
     </li>
     {% endfor %}
   </ul>
+
+  <script type="text/javascript">
+    var friends = [];
+    {% for friend in friends %}
+    friends.push({{ friend.user_id }});
+    {% endfor %}
+
+    setTimeout('load_data({{logged_in_user.user_id }}, friends)', 3000);
+  </script>
+
   {% else %}
   <p>You have no friends <tt>:(</tt></p>
   {% endif %}

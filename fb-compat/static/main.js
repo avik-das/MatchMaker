@@ -43,3 +43,49 @@ function handleSessionChange(response) {
 function goHome() {
   top.location = 'http://apps.facebook.com/' + Config.canvasName + '/';
 }
+
+function load_data(selfid, friends) {
+    FB.api('/me', {fields: "id,feed,friends"}, function(resp) {
+        $.ajax({
+            url: "/record/start-record",
+            type: 'POST',
+            dataType: 'json',
+            success: function(data, textStatus, jqXHR) {
+                var uuid = data["uuid"];
+                $.ajax({
+                    url: "/record/add-self-data/" + uuid,
+                    type: 'POST',
+                    data: {"data": JSON.stringify(resp)},
+                    success: function(data, textStatus, jqXHR) {
+                        $("#load-self").empty();
+                        load_friend(friends, 0, uuid);
+                    }
+                })
+            }
+        })
+    });
+}
+
+function load_friend(friends, fi, uuid) {
+    if (fi >= friends.length) {
+        $.ajax({
+            url: "/record/send-data/" + uuid,
+            type: 'POST',
+            success: function(data, textStatus, jqXHR) {}
+        });
+        return;
+    }
+
+    var fid = friends[fi];
+    FB.api('/' + fid, {fields: "id,feed"}, function(resp) {
+        $.ajax({
+            url: "/record/add-friend-data/" + uuid,
+            type: 'POST',
+            data: {"data": JSON.stringify(resp)},
+            success: function(data, textStatus, jqXHR) {
+                $("#match-" + fid).empty();
+                load_friend(friends, fi + 1, uuid);
+            }
+        });
+    });
+}
