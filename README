@@ -1,1 +1,11 @@
-AWWWW YEEEEAAAAHHHH!!
+MatchMaker
+
+Front-end Programmer: Avik Das
+Back-end Programmer: Joy Yang
+Testing/Validation/Moral Support: Luke Rast
+
+This is our entry for the 2011 CSUA Hackathon. We present a Facebook
+application that matches users with their friends based on statistical
+analysis of the corresponding profiles. We approach the problem mostly
+liguistically in this version, which due to the time constraints is
+rudimentary and hacked together. Oh well.
