@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.name }} &middot; Recent Runs{% endblock %}
+
+{% block body %}
+<div id="user-match">
+  <h1>Compatibility with {{ user.name }}</h1>
+
+  <img class="pic" height="50" width="50"
+       src="{{ user.picture }}" />
+  <a class="name" href="/user/{{ user.user_id }}">{{ user.name }}</a>
+  <div style="clear: both;"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head>
+    <meta charset="utf-8">
+    <title>
+      {% block title %}Welcome{% endblock %} &mdash; Run with Friends
+    </title>
+    <meta name="description" content="Find out which one of your friends you should hook up with.">
+    <link type="text/css" rel="stylesheet" href="/awesome-buttons.css">
+    <link type="text/css" rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <div id="doc">
+      <div class="hd">
+        {% if logged_in_user %}
+          <div id="user-info">
+            <div class="info">
+              <a class="name" href="/user/{{ logged_in_user.user_id }}">
+                {{ logged_in_user.name }}
+              </a>
+              <a class="logout" onclick="FB.logout()">Logout</a>
+            </div>
+            <img width="50" height="50" src="{{ logged_in_user.picture }}">
+          </div>
+        {% endif %}
+        <a class="logo" href="/">MatchMaker</a>
+      </div>
+
+      {% if message %}
+        <div class="message {{ message.type }}">{{ message.content|safe }}</div>
+      {% endif %}
+
+      <div class="bd">
+        {% block body %}{% endblock %}
+      </div><!-- .bd -->
+
+      <div class="ft">
+        By: Avik Das, Luke Rast, Joy Yang
+        <a class="rfloat" target="_new"
+           href="https://github.com/avik-das/MatchMaker">
+          Source code available on Github.
+        </a>
+      </div>
+    </div>
+
+    <script src="/main.js"></script>
+    <div id="fb-root"></div>
+    <script>
+      {# async loading of facebook js sdk #}
+      window.fbAsyncInit = function() { facebookInit({{ js_conf|safe }}) };
+      (function() {
+        var e = document.createElement('script');
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
+  </body>
+</html>

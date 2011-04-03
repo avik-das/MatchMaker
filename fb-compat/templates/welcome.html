@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+{% block body %}
+<div class="welcome">
+  <h1>MatchMaker - Validate your secret crush... or not!</h1>
+
+  <div class="info">
+    <p>
+      Who's that perfect someone for you? Let us figure that out for
+      you!
+    </p>
+    <p>
+      In order to use MatchMaker you must sign in with your Facebook
+      account.
+    </p>
+  </div>
+
+  <div id="login-flow">
+    <fb:login-button perms="email,offline_access" show-faces="true"></fb:login-button>
+  </div>
+</div>
+<img class="promo" alt="Welcome to MatchMaker" src="/matchmaker.png">
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Your Matches{% endblock %}
+{% block body %}
+<div id="matches">
+  <h1>Your Matches</h1>
+
+  {% if friends %}
+  <ul>
+    {% for friend in friends %}
+    <li>
+      <a class="name" href="/user/{{ friend.user_id }}">
+        {{ friend.name }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>You have no friends <tt>:(</tt></p>
+  {% endif %}
+</div>
+{% endblock %}
